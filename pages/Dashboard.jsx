@@ -5,6 +5,7 @@ import LineChart from "../components/LineChart";
 import DashboardCard from '../components/DashboardCard';
 import ProductCard from '../components/ProductCard';
 import { toast } from 'react-toastify';
+import Footer from '../components/Footer';
 
 const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -462,6 +463,7 @@ const Page = () => {
           }
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

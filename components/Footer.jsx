@@ -12,7 +12,7 @@ const Footer = () => {
         </div>
         <div className="flex-1 flex items-start md:justify-end gap-20">
             <div>
-                <h2 className="font-semibold mb-5 text-white">Company</h2>
+                <h2 className="font-semibold mb-5 text-black">Company</h2>
                 <ul className="text-sm space-y-2">
                     <li><a href="#" className='cursor-pointer hover:text-blue-500 duration-200'>Home</a></li>
                     <li><a href="#" className='cursor-pointer hover:text-blue-500 duration-200'>About us</a></li>
@@ -21,7 +21,7 @@ const Footer = () => {
                 </ul>
             </div>
             <div>
-                <h2 className="font-semibold mb-5 text-white">Get in touch</h2>
+                <h2 className="font-semibold mb-5 text-black">Get in touch</h2>
                 <div className="text-sm space-y-2">
                     <p className='cursor-pointer hover:text-blue-500 duration-200'>+1-212-456-7890</p>
                     <p className='cursor-pointer hover:text-blue-500 duration-200'>contact@example.com</p>
