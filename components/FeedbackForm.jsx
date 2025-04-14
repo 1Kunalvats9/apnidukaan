@@ -9,17 +9,17 @@ const FeedbackForm = () => {
 
             <div className="flex flex-col md:flex-row items-center gap-8 w-[350px] md:w-[700px]">
                 <div className="w-full">
-                    <label className="text-black/70" for="name">Your Name</label>
+                    <label className="text-black/70" htmlFor="name">Your Name</label>
                     <input className="h-12 p-2 mt-2 w-full border border-gray-500/30 rounded outline-none focus:border-indigo-300" type="text" required />
                 </div>
                 <div className="w-full">
-                    <label className="text-black/70" for="name">Your Email</label>
+                    <label className="text-black/70" htmlFor="name">Your Email</label>
                     <input className="h-12 p-2 mt-2 w-full border border-gray-500/30 rounded outline-none focus:border-indigo-300" type="email" required />
                 </div>
             </div>
 
             <div className="mt-6 w-[350px] md:w-[700px]">
-                <label className="text-black/70" for="name">Message</label>
+                <label className="text-black/70" htmlFor="name">Message</label>
                 <textarea className="w-full mt-2 p-2 h-40 border border-gray-500/30 rounded resize-none outline-none focus:border-indigo-300" required></textarea>
             </div>
 

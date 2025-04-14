@@ -28,10 +28,11 @@ const Page = () => {
   const [showAddress, setShowAddress] = useState(false)
   const [totalAmount, settotalAmount] = useState(0)
   const [customerPhone, setcustomerPhone] = useState("")
+  const [userData, setuserData] = useState([])
   useEffect(() => {
       let price = 0
       cart.forEach((item, idx) => {
-          price += item.price
+          price += item.price*item.quantity
           console.log(price)
       })
       settotalAmount(price)
@@ -81,7 +82,7 @@ const Page = () => {
           customerPhone && await sendBill();
           const res = await fetch("https://apnidukaankaserver.onrender.com/api/checkout/checkout-product", {
               method: "POST",
-              body: JSON.stringify({ cart }),
+              body: JSON.stringify({ cart,email }),
               headers: { "Content-Type": "application/json" }
           });
 
@@ -162,6 +163,24 @@ const Page = () => {
     }
   }, []);
 
+  useEffect(()=>{
+    const fetchUser = async ()=>{
+      const res = await fetch("https://apnidukaankaserver.onrender.com/api/user/get-user",{
+        method:"POST",
+        body:JSON.stringify({email}),
+        headers: { "Content-Type": "application/json" }
+      })
+      const data = await res.json()
+      if(!data){
+        toast.error("User data not available")
+      }
+      setuserData(data.data)
+      console.log(data.data)
+      setprofit(data.data.profit)
+      settotalIncome(data.data.totalIncome)
+    }
+    fetchUser()
+  },[cart,email])
   const refreshProducts = async (userEmail) => {
     try {
       const res = await fetch("https://apnidukaankaserver.onrender.com/api/inventory/inventoryget", {
@@ -385,7 +404,7 @@ const Page = () => {
 
       <div className='w-[100vw] mt-[69px] bg-blue-50 h-auto flex flex-col gap-5 md:flex-row items-start px-5 md:px-10 py-4'>
         <div className='w-full md:w-[60%] h-[30vh] md:h-[60vh]'>
-          <LineChart />
+          <LineChart userData={userData} />
         </div>
         <div className='grid w-full md:w-[40%] gap-4 mt-10 md:mt-0 grid-cols-1 place-items-center'>
           <DashboardCard
@@ -438,7 +457,7 @@ const Page = () => {
               products
                 .filter(ele => ele.name?.toLowerCase().startsWith(searchFor.toLowerCase()))
                 .map((item, idx) => (
-                  <ProductCard key={idx} name={item.name} price={item.retailPrice} url={item.url} quantity={item.quantity} id={item._id} onAddToCart={handleAddToCart} />
+                  <ProductCard key={idx} name={item.name} price={item.retailPrice} url={item.url} quantity={item.quantity} id={item._id} onAddToCart={handleAddToCart} wholesalePrice={item.wholesalePrice} />
                 )) : <h1>Inventory is empty.</h1>
           }
         </div>

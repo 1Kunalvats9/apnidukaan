@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 
-const ProductCard = ({ url, name, price, quantity,id, onAddToCart }) => {
+const ProductCard = ({ url, name, price, quantity,id, onAddToCart, wholesalePrice }) => {
     const [qty, setQty] = useState(0);
     const handleChange = (e) => {
         setQty(Number(e.target.value));
@@ -10,7 +10,8 @@ const ProductCard = ({ url, name, price, quantity,id, onAddToCart }) => {
         if (qty > 0) {
             onAddToCart({
                 name,
-                price,
+                price:Number(price),
+                wholesalePrice:Number(wholesalePrice),
                 url,
                 quantity: qty,
                 id:id

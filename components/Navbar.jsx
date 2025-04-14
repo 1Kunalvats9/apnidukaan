@@ -10,6 +10,7 @@ const Navbar = ({ isLoggedIn,setcart, cartProducts, itemAddEffect , setisCartOpe
         if(isLoggedIn){
             localStorage.removeItem('token')
             localStorage.removeItem('email')
+            localStorage.removeItem("cart")
             toast.success('User logged Out Successfully')
             navigate('/')
         }else{
