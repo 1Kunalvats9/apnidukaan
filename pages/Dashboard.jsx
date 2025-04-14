@@ -451,7 +451,7 @@ const Page = () => {
             </div>
           </button>
         </div>
-        <div className='w-full grid gap-3 md:gap-5 grid-cols-2 md:grid-cols-4 px-2 md:px-7 py-3'>
+        <div className='w-full grid gap-3 md:gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-2 md:px-7 py-3'>
           {
             products.length > 0 ?
               products
