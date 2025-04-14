@@ -22,7 +22,7 @@ export default function Home() {
     <div>
       <Navbar isLoggedIn={isLoggedIn} />
       {/*Intro Section */}
-      <section id="home" className="w-full flex items-center justify-center text-center py-24 px-4 bg-white">
+      <section id="home" className="w-full mt-14 flex items-center justify-center text-center py-24 px-4 bg-white">
         <div className="max-w-3xl">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Apni Dukaan</span> Smart Tool for Every Local Shop
