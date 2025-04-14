@@ -31,10 +31,14 @@ export default function Home() {
             Easily manage your shop's inventory, track sales, and use a simple checkout system – all in one place. Apni Dukaan helps local shopkeepers run their business smarter and faster, without any hassle.
           </p>
           <div className="flex justify-center space-x-4">
-            <button onClick={() => { navigate('/dashboard') }} className="px-6 py-3 hover:bg-[#3e3be5] cursor-pointer text-white rounded-md bg-[#615FFF] transition">
+            <button onClick={() => {
+              isLoggedIn ? navigate('/dashboard'):navigate('/login')
+            }} className="px-6 py-3 hover:bg-[#3e3be5] cursor-pointer text-white rounded-md bg-[#615FFF] transition">
               Dashboard
             </button>
-            <button onClick={() => { navigate('/dashboard') }} className="px-6 cursor-pointer py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition">
+            <button onClick={() => {
+              isLoggedIn ? navigate('/dashboard'):navigate('/login')
+            }} className="px-6 cursor-pointer py-3 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition">
               Get Started
             </button>
           </div>
