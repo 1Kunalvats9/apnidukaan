@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react"
 import { toast } from 'react-toastify';
 
-const Navbar = ({ isLoggedIn,setcart, cartProducts, itemAddEffect }) => {
+const Navbar = ({ isLoggedIn,setcart, cartProducts, itemAddEffect , setisCartOpen }) => {
     const navigate = useNavigate()
     const [open, setOpen] = useState(false)
     const [isCartOpen, setisCartOptn] = useState(false)
@@ -44,7 +44,7 @@ const Navbar = ({ isLoggedIn,setcart, cartProducts, itemAddEffect }) => {
                     isLoggedIn && 
                     <div onClick={()=>{
                         // setisCartOptn(!isCartOpen)
-                        navigate('/cart')
+                        setisCartOpen(true)
                     }} className={`relative cursor-pointer ${itemAddEffect ? "bounce":""}`}>
                         <svg width="18" height="18" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M.583.583h2.333l1.564 7.81a1.17 1.17 0 0 0 1.166.94h5.67a1.17 1.17 0 0 0 1.167-.94l.933-4.893H3.5m2.333 8.75a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0m6.417 0a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0" stroke="#615fff" strokeLinecap="round" strokeLinejoin="round" />
