@@ -10,11 +10,11 @@ import {
   } from 'recharts';
 
   const dataDummy = [
-    { name: 'Jan', value: 0 },
-    { name: 'Feb', value: 0 },
-    { name: 'Mar', value: 0 },
-    { name: 'Apr', value: 0 },
-    { name: 'May', value: 0 },
+    { name: '1', value: 0 },
+    { name: '2', value: 0 },
+    { name: '3', value: 0 },
+    { name: '4', value: 0 },
+    { name: '5', value: 0 },
   ];
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -30,28 +30,26 @@ import {
   };
 
   const IncomeChart = ({ userData }) => {
-    const [monthlyIncomeData, setMonthlyIncomeData] = useState([]);
+    const [dailyIncomeData, setDailyIncomeData] = useState([]);
 
     useEffect(() => {
       if (userData && userData.checkoutHistory && userData.checkoutHistory.length > 0) {
-        const monthlyIncome = {};
+        const dailyIncome = {};
 
         userData.checkoutHistory.forEach((checkout) => {
           const date = new Date(checkout.dateOfCheckout);
-          const year = date.getFullYear();
-          const month = date.toLocaleString('default', { month: 'short' });
-          const monthYear = `${month} ${year}`;
+          const day = date.toLocaleDateString(); // Format date as "MM/DD/YYYY" or similar based on locale
 
-          monthlyIncome[monthYear] = (monthlyIncome[monthYear] || 0) + checkout.totalPrice;
+          dailyIncome[day] = (dailyIncome[day] || 0) + checkout.totalPrice;
         });
 
-        const chartData = Object.entries(monthlyIncome)
-          .sort(([, valueA], [, valueB]) => valueB - valueA)
-          .map(([monthYear, total]) => ({ name: monthYear, value: total }));
+        const chartData = Object.entries(dailyIncome)
+          .sort(([, valueA], [, valueB]) => new Date(valueA[0]) - new Date(valueB[0])) // Sort by date
+          .map(([day, total]) => ({ name: day, value: total }));
 
-        setMonthlyIncomeData(chartData);
+        setDailyIncomeData(chartData);
       } else {
-        setMonthlyIncomeData(dataDummy);
+        setDailyIncomeData(dataDummy);
       }
     }, [userData]);
 
@@ -59,7 +57,7 @@ import {
       <div className='w-full h-full'>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={monthlyIncomeData}
+            data={dailyIncomeData}
             margin={{ top: 20, right: 30, bottom: 20, left: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
