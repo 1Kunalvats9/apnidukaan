@@ -33,7 +33,7 @@ const ProductCard = ({ url, name, price, quantity,id, onAddToCart, wholesalePric
                     <h1 className='text-lg'>{quantity}</h1>
                 </div>
             </div>
-            <div className='flex flex-col mt-1 items-center justify-between'>
+            <div className='flex flex-col mt-1 px-3 md:px-0 items-center justify-between'>
                 <input type="number" onChange={handleChange} min="0" max={quantity} value={qty>0?qty:""} placeholder='Quantity' className='px-2 no-spinner py-1 w-[90%] md:w-full bg-white border-2 border-black rounded-md' />
                 <div className='flex py-2 px-1 md:px-0 items-center gap-2 w-full justify-between'>
                     <button className='px-2 py-3 text-center flex items-center text-sm md:text-md justify-center cursor-pointer hover:scale-105 duration-200 text-white h-10 border bg-indigo-500 rounded-md'>
