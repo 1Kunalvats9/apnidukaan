@@ -74,7 +74,7 @@ const page = () => {
                 <button type="submit" className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity cursor-pointer">
                     Login
                 </button>
-                <p className="text-gray-500 text-sm mt-3 mb-11">Don’t have an account? <a className="text-indigo-500" href="/register">Sign up</a></p>
+                <p className="text-gray-500 text-sm mt-3 mb-11">Don’t have an account? <a className="text-indigo-500" onClick={()=>{navigate('/register')}}>Sign up</a></p>
             </form>
         </div>
     )
