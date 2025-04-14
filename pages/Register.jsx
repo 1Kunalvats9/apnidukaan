@@ -17,7 +17,7 @@ const page = () => {
         e.preventDefault()
         const data = {shopName,ownerName,email,password,location,category,phoneNumber}
         try{
-            const res = await fetch('http://localhost:3000/api/auth/register', {
+            const res = await fetch('https://apnidukaankaserver.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

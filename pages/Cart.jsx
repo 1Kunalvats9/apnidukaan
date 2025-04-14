@@ -34,7 +34,7 @@ const Cart = () => {
         `;
 
         try {
-            const res = await fetch('http://localhost:3000/api/sms/send', {
+            const res = await fetch('https://apnidukaankaserver.onrender.com/api/sms/send', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ phoneNumber: customerPhone, billDetails }),
@@ -62,7 +62,7 @@ const Cart = () => {
     const handleCheckout = async () => {
         try {
             customerPhone && await sendBill();
-            const res = await fetch("http://localhost:3000/api/checkout/checkout-product", {
+            const res = await fetch("https://apnidukaankaserver.onrender.com/api/checkout/checkout-product", {
                 method: "POST",
                 body: JSON.stringify({ cart }),
                 headers: { "Content-Type": "application/json" }

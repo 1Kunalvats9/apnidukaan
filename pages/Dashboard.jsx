@@ -51,7 +51,7 @@ const Page = () => {
       `;
 
       try {
-          const res = await fetch('http://localhost:3000/api/sms/send', {
+          const res = await fetch('https://apnidukaankaserver.onrender.com/api/sms/send', {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ phoneNumber: customerPhone, billDetails }),
@@ -79,7 +79,7 @@ const Page = () => {
   const handleCheckout = async () => {
       try {
           customerPhone && await sendBill();
-          const res = await fetch("http://localhost:3000/api/checkout/checkout-product", {
+          const res = await fetch("https://apnidukaankaserver.onrender.com/api/checkout/checkout-product", {
               method: "POST",
               body: JSON.stringify({ cart }),
               headers: { "Content-Type": "application/json" }
@@ -110,7 +110,7 @@ const Page = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/upload/upload-file", {
+      const res = await fetch("https://apnidukaankaserver.onrender.com/api/upload/upload-file", {
         method: "POST",
         body: formData,
       });
@@ -164,7 +164,7 @@ const Page = () => {
 
   const refreshProducts = async (userEmail) => {
     try {
-      const res = await fetch("http://localhost:3000/api/inventory/inventoryget", {
+      const res = await fetch("https://apnidukaankaserver.onrender.com/api/inventory/inventoryget", {
         method: "POST",
         body: JSON.stringify({ email: userEmail }),
         headers: { "Content-Type": "application/json" },
@@ -187,7 +187,7 @@ const Page = () => {
     try {
       const email = localStorage.getItem("email");
       setemail(email);
-      const res = await fetch("http://localhost:3000/api/inventory/inventoryput", {
+      const res = await fetch("https://apnidukaankaserver.onrender.com/api/inventory/inventoryput", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name, category, quantity, retailPrice, wholesalePrice, url }),
