@@ -16,7 +16,7 @@ export const AppProvider = ({ children }) => {
   
   const analytics = {
     totalProducts: products.length,
-    inventoryWorth: products.reduce((acc, p) => acc + (Number(p.retailPrice) * Number(p.quantity)), 0),
+    inventoryWorth: products.reduce((acc, p) => acc + (p.discountedPrice * p.quantity), 0),
     totalSales: sales.reduce((acc, s) => acc + s.total, 0),
     totalCheckouts: sales.length,
     todaysIncome: sales
@@ -148,7 +148,7 @@ export const AppProvider = ({ children }) => {
   const checkout = useCallback(async (customerPhone) => {
     if (cart.length === 0) return;
     
-    const total = cart.reduce((acc, item) => acc + (item.retailPrice * item.cartQuantity), 0);
+    const total = cart.reduce((acc, item) => acc + (item.discountedPrice * item.cartQuantity), 0);
     
     const updatedProducts = products.map(product => {
       const cartItem = cart.find(item => item.id === product.id);
