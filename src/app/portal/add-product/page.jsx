@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Barcode, Save, X, ScanLine } from 'lucide-react';
 import { useAppContext } from '../../../context/AppContext';
-import { generateEAN13,isValidEAN13 } from '../../../utils/barcodeGenerator';
+import { generateEAN13, isValidEAN13 } from '../../../utils/barcodeGenerator';
 import BarcodeDisplay from '../../components/ui/BarcodeDisplay';
 
 const AddProduct = () => {
-  const { addProduct, getProductByBarcode } = useAppContext();
+  const { addProduct, getProductByBarcode, searchProducts } = useAppContext();
   const [formData, setFormData] = useState({
     name: '',
     barcode: '',
@@ -18,6 +18,54 @@ const AddProduct = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [productExists, setProductExists] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Debounce function
+  const debounce = (func, wait) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  };
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((query) => {
+      if (query.length < 2) {
+        setSearchResults([]);
+        return;
+      }
+      setIsSearching(true);
+      const results = searchProducts(query);
+      setSearchResults(results.slice(0, 5)); // Only show top 5 results
+      setIsSearching(false);
+    }, 300),
+    [searchProducts]
+  );
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
+  };
+
+  // Handle selecting a search result
+  const handleSelectProduct = (product) => {
+    setFormData({
+      name: product.name,
+      barcode: product.barcode,
+      originalPrice: product.originalPrice.toString(),
+      discountedPrice: product.discountedPrice.toString(),
+      quantity: product.quantity.toString(),
+    });
+    setSearchQuery('');
+    setSearchResults([]);
+    setProductExists(true);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,9 +97,28 @@ const AddProduct = () => {
     setProductExists(false);
   };
 
+  const simulateScan = () => {
+    setScanning(true);
+    setTimeout(() => {
+      const barcode = generateEAN13();
+      setFormData(prev => ({ ...prev, barcode }));
+      setScanning(false);
+      const product = getProductByBarcode(barcode);
+      setProductExists(!!product);
+      if (product) {
+        setFormData({
+          name: product.name,
+          barcode: product.barcode,
+          originalPrice: product.originalPrice.toString(),
+          discountedPrice: product.discountedPrice.toString(),
+          quantity: product.quantity.toString(),
+        });
+      }
+    }, 1500);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (formData.barcode && !isValidEAN13(formData.barcode)) {
         setError('Invalid barcode format. Must be a valid EAN-13 barcode.');
@@ -67,7 +134,6 @@ const AddProduct = () => {
       });
 
       setSuccess('Product added successfully!');
-
       setFormData({
         name: '',
         barcode: '',
@@ -75,37 +141,21 @@ const AddProduct = () => {
         discountedPrice: '',
         quantity: '1',
       });
-
-      setTimeout(() => {
-        setSuccess('');
-      }, 3000);
+      setSearchQuery('');
+      setSearchResults([]);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError('Failed to add product. Please try again.');
     }
   };
 
-  const simulateScan = () => {
-    setScanning(true);
-
-    setTimeout(() => {
-      const barcode = generateEAN13();
-      setFormData(prev => ({ ...prev, barcode }));
-      setScanning(false);
-
-      const product = getProductByBarcode(barcode);
-      setProductExists(!!product);
-
-      if (product) {
-        setFormData({
-          name: product.name,
-          barcode: product.barcode,
-          originalPrice: product.originalPrice.toString(),
-          discountedPrice: product.discountedPrice.toString(),
-          quantity: product.quantity.toString(),
-        });
-      }
-    }, 1500);
-  };
+  // Focus barcode input on mount
+  useEffect(() => {
+    const barcodeInput = document.getElementById('barcode');
+    if (barcodeInput) {
+      barcodeInput.focus();
+    }
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -197,17 +247,39 @@ const AddProduct = () => {
         </div>
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 relative">
               <label htmlFor="name" className="label">Product Name</label>
               <input
                 type="text"
                 id="name"
                 name="name"
                 className="input w-full"
-                value={formData.name}
-                onChange={handleChange}
+                value={searchQuery || formData.name}
+                onChange={(e) => {
+                  if (!formData.name) {
+                    handleSearchChange(e);
+                  } else {
+                    handleChange(e);
+                  }
+                }}
                 required
               />
+              {searchResults.length > 0 && searchQuery && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg">
+                  {searchResults.map((product) => (
+                    <div
+                      key={product.id}
+                      className="p-2 hover:bg-slate-50 cursor-pointer"
+                      onClick={() => handleSelectProduct(product)}
+                    >
+                      <div className="font-medium">{product.name}</div>
+                      <div className="text-sm text-slate-500">
+                        Barcode: {product.barcode} | Price: ₹{product.discountedPrice}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
