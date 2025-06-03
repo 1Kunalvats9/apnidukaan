@@ -67,27 +67,44 @@ const AddProduct = () => {
     setProductExists(true);
   };
 
+  // Handle barcode input
+  const handleBarcodeInput = async (barcode) => {
+    if (!isValidEAN13(barcode)) {
+      setError('Invalid barcode format. Must be a valid EAN-13 barcode.');
+      return;
+    }
+
+    const product = getProductByBarcode(barcode);
+    if (product) {
+      setProductExists(true);
+      setFormData({
+        name: product.name,
+        barcode: product.barcode,
+        originalPrice: product.originalPrice.toString(),
+        discountedPrice: product.discountedPrice.toString(),
+        quantity: product.quantity.toString(),
+      });
+    } else {
+      setProductExists(false);
+      setFormData(prev => ({
+        ...prev,
+        barcode,
+        name: '',
+        originalPrice: '',
+        discountedPrice: '',
+        quantity: '1'
+      }));
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
     setError('');
     setSuccess('');
 
     if (name === 'barcode' && value.length === 13) {
-      const product = getProductByBarcode(value);
-      if (product) {
-        setProductExists(true);
-        setFormData({
-          name: product.name,
-          barcode: product.barcode,
-          originalPrice: product.originalPrice.toString(),
-          discountedPrice: product.discountedPrice.toString(),
-          quantity: product.quantity.toString(),
-        });
-      } else {
-        setProductExists(false);
-      }
+      handleBarcodeInput(value);
     }
   };
 
@@ -95,26 +112,6 @@ const AddProduct = () => {
     const barcode = generateEAN13();
     setFormData(prev => ({ ...prev, barcode }));
     setProductExists(false);
-  };
-
-  const simulateScan = () => {
-    setScanning(true);
-    setTimeout(() => {
-      const barcode = generateEAN13();
-      setFormData(prev => ({ ...prev, barcode }));
-      setScanning(false);
-      const product = getProductByBarcode(barcode);
-      setProductExists(!!product);
-      if (product) {
-        setFormData({
-          name: product.name,
-          barcode: product.barcode,
-          originalPrice: product.originalPrice.toString(),
-          discountedPrice: product.discountedPrice.toString(),
-          quantity: product.quantity.toString(),
-        });
-      }
-    }, 1500);
   };
 
   const handleSubmit = async (e) => {
@@ -149,11 +146,21 @@ const AddProduct = () => {
     }
   };
 
-  // Focus barcode input on mount
+  // Focus barcode input on mount and handle keydown events
   useEffect(() => {
     const barcodeInput = document.getElementById('barcode');
     if (barcodeInput) {
       barcodeInput.focus();
+
+      const handleKeyDown = (e) => {
+        // If Enter is pressed and we have a valid barcode
+        if (e.key === 'Enter' && barcodeInput.value.length === 13) {
+          handleBarcodeInput(barcodeInput.value);
+        }
+      };
+
+      barcodeInput.addEventListener('keydown', handleKeyDown);
+      return () => barcodeInput.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
 
@@ -167,29 +174,13 @@ const AddProduct = () => {
             <ScanLine size={20} className="mr-2" />
             Barcode Scanner
           </h2>
-          <button
-            className="btn btn-primary"
-            onClick={simulateScan}
-            disabled={scanning}
-          >
-            {scanning ? 'Scanning...' : 'Scan Barcode'}
-          </button>
         </div>
-        <div className="p-6 flex items-center justify-center bg-white">
-          {scanning ? (
-            <div className="text-center py-8">
-              <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden mb-4">
-                <div className="h-full bg-indigo-500 animate-pulse rounded-full\" style={{ width: '70%' }}></div>
-              </div>
-              <p className="text-slate-600">Scanning barcode, please wait...</p>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-slate-500">
-              <Barcode size={48} className="mx-auto mb-3 text-slate-400" />
-              <p>Click the scan button to scan a barcode</p>
-              <p className="text-xs mt-2">For demonstration purposes, this will generate a random barcode</p>
-            </div>
-          )}
+        <div className="p-6">
+          <div className="text-center">
+            <Barcode size={48} className="mx-auto mb-3 text-slate-400" />
+            <p className="text-slate-600">Scan a barcode or enter it manually</p>
+            <p className="text-xs mt-2 text-slate-500">The scanner will automatically detect and process the barcode</p>
+          </div>
         </div>
       </div>
 
@@ -292,7 +283,7 @@ const AddProduct = () => {
                   className="input flex-1"
                   value={formData.barcode}
                   onChange={handleChange}
-                  placeholder="Enter or scan barcode"
+                  placeholder="Scan or enter barcode"
                   maxLength={13}
                   required
                 />
