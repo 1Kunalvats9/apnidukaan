@@ -179,7 +179,7 @@ const AddProduct = () => {
           {scanning ? (
             <div className="text-center py-8">
               <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden mb-4">
-                <div className="h-full bg-indigo-500 animate-pulse rounded-full" style={{ width: '70%' }}></div>
+                <div className="h-full bg-indigo-500 animate-pulse rounded-full\" style={{ width: '70%' }}></div>
               </div>
               <p className="text-slate-600">Scanning barcode, please wait...</p>
             </div>
